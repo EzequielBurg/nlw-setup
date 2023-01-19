@@ -25,11 +25,11 @@ export function SumaryTable() {
 
       <div className="grid grid-rows-7 grid-flow-col gap-3">
         {sumaryDates.map(sumaryDate => (
-          <HabitDay key={sumaryDate.toString()} />
+          <HabitDay key={sumaryDate.toString()} amount={5} completed={Math.round(Math.random() * 5)} />
         ))}
 
         {amountOfDaysToFill > 0 && Array.from({ length: amountOfDaysToFill }).map((_, index) => (
-          <HabitDay key={index} disabled />
+          <HabitDay key={index} disabled amount={0} completed={0} />
         ))}
       </div>
     </div>
