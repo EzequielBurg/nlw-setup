@@ -21,6 +21,7 @@ model Habit {
   @@map("habits")
 }
 
+// quais hábitos estão disponíveis em qual dia da semana
 model HabitWeekDays {
   id       String @id @default(uuid())
   habit_id String
@@ -42,6 +43,7 @@ model Day {
   @@map("days")
 }
 
+// Se houver um registro nesta tabela (envolvendo dia e hábito), significa que tal hábito foi completado naquele dia
 model DayHabit {
   id String @id @default(uuid())
 
