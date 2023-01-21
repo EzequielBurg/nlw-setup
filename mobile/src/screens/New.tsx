@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Feather } from '@expo/vector-icons'
 import { BackButton } from "../components/BackButton";
 import { Checkbox } from "../components/Checkbox";
 import colors from "tailwindcss/colors";
+import { api } from "../lib/axios";
+
+const availableWeekDays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
 
 export function New() {
-  const availableWeekDays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
-
+  const [title, setTitle] = useState('')
   const [weekDays, setWeekDays] = useState<number[]>([])
 
   function handleToggleWeekday(weekDayIndex: number) {
@@ -15,6 +17,25 @@ export function New() {
       setWeekDays(prev => prev.filter(item => item !== weekDayIndex))
     } else {
       setWeekDays(prev => [...prev, weekDayIndex])
+    }
+  }
+
+  function handleCreateHabit() {
+    try {
+      if (!title || !weekDays.length) {
+        Alert.alert('Novo hábito', 'Informe o nome do hábito e a periodicidade')
+        return
+      }
+
+      api.post('/habits', { title, weekDays })
+        .then(() => {
+          setTitle('')
+          setWeekDays([])
+          Alert.alert('Novo hábito', 'Hábito criado com sucesso!')
+        })
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Ops', 'Não possível criar o hábito')
     }
   }
 
@@ -31,6 +52,8 @@ export function New() {
           className="h-12 pl-4 rounded-lg mt-3 bg-zinc-900 text-white border-2 border-zinc-800 focus:border-green-600"
           placeholder="Ex.: exercícios, dormir bem, etc . . ."
           placeholderTextColor={colors.zinc[400]}
+          onChangeText={setTitle}
+          value={title}
         />
 
         <Text className="font-semibold mt-4 mb-3 text-white text-base">Qual a recorrência?</Text>
@@ -44,7 +67,11 @@ export function New() {
           />
         ))}
 
-        <TouchableOpacity activeOpacity={.7} className="flex-row items-center justify-center w-full h-14 mt-6 rounded-lg bg-green-600">
+        <TouchableOpacity
+          onPress={handleCreateHabit}
+          activeOpacity={.7}
+          className="flex-row items-center justify-center w-full h-14 mt-6 rounded-lg bg-green-600"
+        >
           <Feather name="check" size={20} color={colors.white} />
           <Text className="text-white text-base font-semibold ml-2">Confirmar</Text>
         </TouchableOpacity>
