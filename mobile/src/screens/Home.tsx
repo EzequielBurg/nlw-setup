@@ -29,12 +29,10 @@ export function Home() {
 
   const { navigate } = useNavigation()
 
-  async function fetchData() {
+  function fetchData() {
     try {
       setLoading(true)
-      const response = await api.get('/summary')
-      setSummary(response.data)
-      console.log('data', response.data)
+      api.get('/summary').then(res => setSummary(res.data))
     } catch (error) {
       console.log(error);
       Alert.alert('Ops', 'Não foi possível carregar os dados.')
@@ -43,6 +41,7 @@ export function Home() {
     }
   }
 
+  console.log('summary', summary);
   useEffect(() => {
     fetchData()
   }, [])

@@ -1,5 +1,8 @@
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: 'http://192.168.0.108:3333'
-})
+	baseURL: 'https://habits-api.loca.lt',
+	headers: {
+		'Bypass-Tunnel-Reminder': '',
+	},
+});
