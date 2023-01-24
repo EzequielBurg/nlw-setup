@@ -1,24 +1,27 @@
 import * as Popover from '@radix-ui/react-popover';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
-import { Checkbox } from './Checkbox';
+import { useMemo, useState } from 'react';
+import { HabitsList } from './HabitsList';
 import { ProgressBar } from './ProgressBar';
 
 interface HabitDayProps {
   disabled?: boolean
   date?: Date;
   amount?: number;
-  completed?: number;
+  defaultCompleted?: number;
 }
 
-export function HabitDay({ amount = 0, completed = 0, date, disabled }: HabitDayProps) {
+export function HabitDay({ amount = 0, defaultCompleted = 0, date, disabled }: HabitDayProps) {
+  const [completed, setCompleted] = useState(defaultCompleted)
+
   const completedPercentage = amount > 0 ? Math.round((completed / amount) * 100) : 0
 
   const today = dayjs().startOf('day').toDate()
 
   const isCurrentDate = dayjs(today).isSame(date)
 
-  const className = clsx('w-10 h-10 border-2 rounded-lg', {
+  const className = clsx('w-10 h-10 border-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-offset-2 focus:ring-offset-background', {
     'border-white border-4': isCurrentDate,
     'opacity-40 cursor-not-allowed': disabled,
     'bg-zinc-900 border-zinc-800': completedPercentage === 0,
@@ -32,6 +35,10 @@ export function HabitDay({ amount = 0, completed = 0, date, disabled }: HabitDay
   const dayWeek = dayjs(date).format('dddd')
 
   const dayAndMonth = dayjs(date).format('DD/MM')
+
+  function handleCompletedChanged(completed: number) {
+    setCompleted(completed)
+  }
 
   return (
     <Popover.Root>
@@ -51,10 +58,7 @@ export function HabitDay({ amount = 0, completed = 0, date, disabled }: HabitDay
 
           <ProgressBar progress={completedPercentage} />
 
-          <div className="mt-6 flex flex-col gap-3">
-            <Checkbox textEffect label='Estudar' />
-          </div>
-
+          <HabitsList date={date} onCompletedChanged={handleCompletedChanged} />
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>

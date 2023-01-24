@@ -25,7 +25,7 @@ export async function appRoutes(app: FastifyInstance) {
     })
   });
 
-  app.get('/days', async (request) => {
+  app.get('/day', async (request) => {
     const getDayParams = z.object({
       date: z.coerce.date()
     })
@@ -50,9 +50,9 @@ export async function appRoutes(app: FastifyInstance) {
       include: { dayHabits: true }
     })
 
-    const completedHabist = day?.dayHabits.map(dayHabit => dayHabit.habit_id)
+    const completedHabits = day?.dayHabits.map(dayHabit => dayHabit.habit_id) ?? []
 
-    return { possibleHabits, completedHabist }
+    return { possibleHabits, completedHabits }
   })
 
   // completar / não completar um hábito

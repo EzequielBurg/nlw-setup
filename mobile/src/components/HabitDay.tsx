@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import dayjs from "dayjs";
 import { Dimensions, TouchableOpacity, TouchableOpacityProps } from "react-native";
 
 interface HabitDayProps extends TouchableOpacityProps {
@@ -17,7 +18,12 @@ export const DAY_SIZE = Dimensions.get('screen').width / WEEK_DAYS - (SCREEN_HOR
 export function HabitDay({ disabled, amount = 0, completed = 0, date, ...rest }: HabitDayProps) {
   const completedPercentage = amount > 0 ? Math.round((completed / amount) * 100) : 0
 
+  const today = dayjs().startOf('day').toDate()
+
+  const isCurrentDate = dayjs(today).isSame(date)
+
   const className = clsx('w-10 h-10 border-2 rounded-lg', {
+    'border-white border-4': isCurrentDate,
     'opacity-40 cursor-not-allowed': disabled,
     'bg-zinc-900 border-zinc-800': completedPercentage === 0,
     'bg-violet-900 border-violet-700': completedPercentage > 0 && completedPercentage < 20,

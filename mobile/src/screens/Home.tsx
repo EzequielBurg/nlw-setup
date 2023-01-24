@@ -41,7 +41,6 @@ export function Home() {
     }
   }
 
-  console.log('summary', summary);
   useEffect(() => {
     fetchData()
   }, [])
