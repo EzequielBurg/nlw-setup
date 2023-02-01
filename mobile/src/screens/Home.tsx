@@ -1,6 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
+import { useCallback, useState } from "react";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
 import { DAY_SIZE, HabitDay } from "../components/HabitDay";
 import { Header } from "../components/Header";
@@ -15,16 +15,17 @@ type Summary = Array<{
   completed: number;
 }>
 
-const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
-
-const datesFromYearStart = generateDatesFromYearBeginning()
-
-const minimumSummaryDatesSizes = 18 * 5
-
-const amountOfDaysToFill = minimumSummaryDatesSizes - datesFromYearStart.length
-
 export function Home() {
+  const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
+
+  const datesFromYearStart = generateDatesFromYearBeginning()
+
+  const minimumSummaryDatesSizes = 18 * 5
+
+  const amountOfDaysToFill = minimumSummaryDatesSizes - datesFromYearStart.length
+
   const [loading, setLoading] = useState(true)
+
   const [summary, setSummary] = useState<Summary>([])
 
   const { navigate } = useNavigation()
@@ -41,9 +42,9 @@ export function Home() {
     }
   }
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     fetchData()
-  }, [])
+  }, []))
 
   if (loading) return <Loading />
 
@@ -74,6 +75,7 @@ export function Home() {
                 onPress={() => navigate('habit', { date: date.toISOString() })}
                 amount={dayWithHabits?.amount}
                 completed={dayWithHabits?.completed}
+                date={date}
               />
             )
           })}

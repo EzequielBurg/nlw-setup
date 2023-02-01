@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { Dimensions, TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { calculatePercentage } from "../utils/calculate-percentage";
 
 interface HabitDayProps extends TouchableOpacityProps {
   disabled?: boolean;
@@ -12,18 +13,17 @@ interface HabitDayProps extends TouchableOpacityProps {
 const WEEK_DAYS = 7;
 const SCREEN_HORIZONTAL_PADDING = (32 * 2) / 5;
 
-export const DAY_MARGIN_BETWEEN = 8;
+export const DAY_MARGIN_BETWEEN = 4;
 export const DAY_SIZE = Dimensions.get('screen').width / WEEK_DAYS - (SCREEN_HORIZONTAL_PADDING + 5);
 
 export function HabitDay({ disabled, amount = 0, completed = 0, date, ...rest }: HabitDayProps) {
-  const completedPercentage = amount > 0 ? Math.round((completed / amount) * 100) : 0
+  const completedPercentage = calculatePercentage(amount, completed)
 
   const today = dayjs().startOf('day').toDate()
 
   const isCurrentDate = dayjs(today).isSame(date)
 
   const className = clsx('w-10 h-10 border-2 rounded-lg', {
-    'border-white border-4': isCurrentDate,
     'opacity-40 cursor-not-allowed': disabled,
     'bg-zinc-900 border-zinc-800': completedPercentage === 0,
     'bg-violet-900 border-violet-700': completedPercentage > 0 && completedPercentage < 20,
@@ -31,13 +31,14 @@ export function HabitDay({ disabled, amount = 0, completed = 0, date, ...rest }:
     'bg-violet-700 border-violet-500': completedPercentage >= 40 && completedPercentage < 60,
     'bg-violet-600 border-violet-500': completedPercentage >= 60 && completedPercentage < 80,
     'bg-violet-500 border-violet-400': completedPercentage >= 80,
+    'border-white border-4': isCurrentDate,
   })
 
   return (
     <TouchableOpacity
       {...rest}
       className={className}
-      style={{ width: DAY_SIZE, height: DAY_SIZE }}
+      style={{ width: DAY_SIZE, height: DAY_SIZE, margin: DAY_MARGIN_BETWEEN }}
       activeOpacity={.7}
     />
   )
